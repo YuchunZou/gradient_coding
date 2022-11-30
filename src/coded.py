@@ -144,6 +144,7 @@ def coded_logistic_regression(n_procs, n_samples, n_features, input_dir, n_strag
             
             completed_ind_set = [l for l in range(n_procs-1) if completed_workers[l]]
             A_row[0,completed_ind_set] = np.linalg.lstsq(B[completed_ind_set,:].T,np.ones(n_workers))[0]
+            # get rid of the 1-dimension in the vector
             g = np.squeeze(np.dot(A_row, msgBuffers))
             
             # case_idx = calculate_indexA(completed_stragglers)
@@ -197,6 +198,7 @@ def coded_logistic_regression(n_procs, n_samples, n_features, input_dir, n_strag
             X_train = load_sparse_csr(input_dir+"1")
             for j in range(2,n_procs-1):
                 X_temp = load_sparse_csr(input_dir+str(j))
+                # Stack the matrices  X_train and X_temp vertically.
                 X_train = sps.vstack((X_train, X_temp))
 
         y_train = load_data(input_dir+"label.dat")
